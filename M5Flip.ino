@@ -5,17 +5,21 @@
 #include "src/core/StateManager.h"
 
 #include "src/modules/WifiApp.h"
+#include "src/modules/WifiDetailApp.h"
 #include "src/modules/BleApp.h"
+#include "src/modules/BleDetailApp.h"
 #include "src/modules/SystemApp.h"
 #include "src/modules/ir/IrSender.h"
 #include "src/modules/ir/IrRemoteApp.h"
 #include "src/modules/ir/TvBGoneApp.h"
 
-WifiScanApp wifiScan;
-BleScanApp  bleScan;
-IrRemoteApp irRemote;
-TvBGoneApp  tvbGone;
-SystemApp   systemApp;
+WifiScanApp   wifiScan;
+WifiDetailApp wifiDetail;
+BleScanApp    bleScan;
+BleDetailApp  bleDetail;
+IrRemoteApp   irRemote;
+TvBGoneApp    tvbGone;
+SystemApp     systemApp;
 
 const char* const kWifiLabels[] = { "Scan networks" };
 App* const        kWifiApps[]   = { &wifiScan };
@@ -40,6 +44,10 @@ void setup() {
 
   UI::begin();
   IrSender::begin();
+
+  wifiScan.setDetail(&wifiDetail);
+  bleScan.setDetail(&bleDetail);
+
   StateManager::begin(&mainMenu);
 }
 
