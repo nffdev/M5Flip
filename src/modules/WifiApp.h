@@ -1,12 +1,16 @@
 #pragma once
 #include "../core/App.h"
 #include "../core/Input.h"
+#include "../core/StateManager.h"
 #include "../ui/UI.h"
+#include "WifiDetailApp.h"
 #include <WiFi.h>
 
 class WifiScanApp : public App {
 public:
   const char* title() const override { return "WiFi Scan"; }
+
+  void setDetail(WifiDetailApp* d) { _detail = d; }
 
   void onEnter() override {
     WiFi.mode(WIFI_STA);
@@ -26,10 +30,14 @@ public:
       if (r >= 0) _found = r;
     } else {
       if (Input::next() && _found > 0) _sel = (_sel + 1) % _found;
-      if (Input::okLong()) {
+      if (Input::nextLong()) {
         WiFi.scanDelete();
         _found = -1; _sel = 0;
         WiFi.scanNetworks(true);
+      }
+      if (Input::ok() && _found > 0 && _detail) {
+        _detail->setIndex(_sel);
+        StateManager::push(_detail);
       }
     }
 
@@ -46,7 +54,7 @@ public:
     } else {
       drawList();
     }
-    UI::footerHint("B: next   A(hold): rescan   PWR: back");
+    UI::footerHint("A: detail   B: next   B(hold): rescan");
     UI::flush();
     return Action::None;
   }
@@ -89,4 +97,5 @@ private:
   int _found = -1;
   int _sel = 0;
   unsigned long _scanStart = 0;
+  WifiDetailApp* _detail = nullptr;
 };
