@@ -6,12 +6,15 @@
 
 #include "src/modules/WifiApp.h"
 #include "src/modules/BleApp.h"
-#include "src/modules/IrApp.h"
 #include "src/modules/SystemApp.h"
+#include "src/modules/ir/IrSender.h"
+#include "src/modules/ir/IrRemoteApp.h"
+#include "src/modules/ir/TvBGoneApp.h"
 
 WifiScanApp wifiScan;
 BleScanApp  bleScan;
-IrApp       irApp;
+IrRemoteApp irRemote;
+TvBGoneApp  tvbGone;
 SystemApp   systemApp;
 
 const char* const kWifiLabels[] = { "Scan networks" };
@@ -22,8 +25,12 @@ const char* const kBleLabels[] = { "Scan devices" };
 App* const        kBleApps[]   = { &bleScan };
 MenuApp bleMenu("Bluetooth", kBleLabels, kBleApps, 1);
 
+const char* const kIrLabels[] = { "Remote", "TV-B-Gone" };
+App* const        kIrApps[]   = { &irRemote, &tvbGone };
+MenuApp irMenu("Infrared", kIrLabels, kIrApps, 2);
+
 const char* const kMainLabels[] = { "WiFi", "Bluetooth", "Infrared", "System" };
-App* const        kMainApps[]   = { &wifiMenu, &bleMenu, &irApp, &systemApp };
+App* const        kMainApps[]   = { &wifiMenu, &bleMenu, &irMenu, &systemApp };
 MenuApp mainMenu("M5Flip", kMainLabels, kMainApps, 4);
 
 void setup() {
@@ -32,6 +39,7 @@ void setup() {
   M5.Display.setRotation(1);
 
   UI::begin();
+  IrSender::begin();
   StateManager::begin(&mainMenu);
 }
 
