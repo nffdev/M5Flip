@@ -11,6 +11,8 @@
 #include "src/modules/BleDetailApp.h"
 #include "src/modules/SystemApp.h"
 #include "src/modules/ConfigApp.h"
+#include "src/modules/clock/ClockSetApp.h"
+#include "src/modules/clock/ClockApp.h"
 #include "src/modules/ir/IrSender.h"
 #include "src/modules/ir/IrRemoteApp.h"
 #include "src/modules/ir/TvBGoneApp.h"
@@ -23,6 +25,8 @@ IrRemoteApp   irRemote;
 TvBGoneApp    tvbGone;
 SystemApp     systemApp;
 ConfigApp     configApp;
+ClockSetApp   clockSet;
+ClockApp      clockApp;
 
 const char* const kWifiLabels[] = { "Scan networks" };
 App* const        kWifiApps[]   = { &wifiScan };
@@ -36,9 +40,9 @@ const char* const kIrLabels[] = { "Remote", "TV-B-Gone" };
 App* const        kIrApps[]   = { &irRemote, &tvbGone };
 MenuApp irMenu("Infrared", kIrLabels, kIrApps, 2);
 
-const char* const kMainLabels[] = { "WiFi", "Bluetooth", "Infrared", "System", "Config" };
-App* const        kMainApps[]   = { &wifiMenu, &bleMenu, &irMenu, &systemApp, &configApp };
-MenuApp mainMenu("M5Flip", kMainLabels, kMainApps, 5);
+const char* const kMainLabels[] = { "WiFi", "Bluetooth", "Infrared", "Clock", "System", "Config" };
+App* const        kMainApps[]   = { &wifiMenu, &bleMenu, &irMenu, &clockApp, &systemApp, &configApp };
+MenuApp mainMenu("M5Flip", kMainLabels, kMainApps, 6);
 
 void setup() {
   auto cfg = M5.config();
@@ -52,6 +56,7 @@ void setup() {
 
   wifiScan.setDetail(&wifiDetail);
   bleScan.setDetail(&bleDetail);
+  clockApp.setEditor(&clockSet);
 
   StateManager::begin(&mainMenu);
 }
